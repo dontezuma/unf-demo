@@ -1,0 +1,10 @@
+{
+  "name": "unf-ai-challenge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UNF AI & Design Thinking Innovation Challenge — Live Event Hub",
+  "engines": { "node": "20.x" },
+  "dependencies": {
+    "@vercel/kv": "^1.0.0"
+  }
+}

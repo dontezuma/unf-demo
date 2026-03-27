@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>UNF AI Challenge — Submit Photos &amp; Register</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --osprey-blue: #0A233F;
+  --osprey-gray: #A7A8A9;
+  --unf-aqua:    #00B2E2;
+  --unf-dark:    #003886;
+  --unf-mid:     #008EA9;
+  --white:       #FFFFFF;
+  --off-white:   #F4F6F9;
+  --font: 'Open Sans', sans-serif;
+}
+
+html { background: var(--off-white); }
+body { font-family: var(--font); color: var(--osprey-blue); max-width: 480px; margin: 0 auto; padding: 0 0 80px; }
+
+/* ── HERO ── */
+.hero {
+  background: var(--osprey-blue);
+  padding: 22px 20px 18px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; bottom: -24px; right: -48px;
+  width: 140px; height: 140px;
+  background: rgba(0,178,226,.07); transform: skewX(-38deg);
+}
+.hero-logo { height: 34px; filter: brightness(0) invert(1); margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto; }
+.hero h1 { font-size: 18px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: .05em; line-height: 1.2; }
+.hero p  { font-size: 11px; color: var(--unf-aqua); margin-top: 5px; }
+
+/* ── CARDS ── */
+.card {
+  background: #fff; margin: 14px 14px 0;
+  border-radius: 4px; border: 1px solid rgba(10,35,63,.1);
+  overflow: hidden;
+}
+.card-header {
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--unf-aqua);
+  font-size: 11px; font-weight: 800; color: var(--osprey-blue);
+  text-transform: uppercase; letter-spacing: .1em;
+  display: flex; align-items: center; gap: 8px;
+}
+.card-body { padding: 16px; }
+
+/* ── FORM ── */
+.form-row { margin-bottom: 12px; }
+label {
+  display: block; font-size: 10px; font-weight: 700;
+  color: var(--osprey-blue); text-transform: uppercase;
+  letter-spacing: .08em; margin-bottom: 5px;
+}
+input[type=text], textarea {
+  width: 100%; padding: 10px 12px;
+  border: 1.5px solid rgba(10,35,63,.2); border-radius: 3px;
+  font-family: var(--font); font-size: 14px; color: var(--osprey-blue);
+  background: #fafbfd; outline: none; transition: border-color .2s;
+}
+input[type=text]:focus, textarea:focus { border-color: var(--unf-aqua); background: #fff; }
+textarea { resize: vertical; min-height: 80px; }
+
+/* ── PHOTO DROP ── */
+.photo-drop {
+  border: 2px dashed rgba(10,35,63,.2); border-radius: 3px;
+  padding: 24px 16px; text-align: center; cursor: pointer;
+  background: #f7fafd; position: relative; transition: all .2s;
+}
+.photo-drop:hover, .photo-drop.over { border-color: var(--unf-aqua); background: #e6f6fc; }
+.photo-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.photo-drop .cam  { font-size: 36px; opacity: .4; margin-bottom: 8px; }
+.photo-drop p     { font-size: 13px; color: var(--osprey-blue); font-weight: 700; }
+.photo-drop small { font-size: 10px; color: var(--osprey-gray); }
+
+.preview-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 5px; margin-top: 10px; }
+.preview-grid img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:2px; border:1px solid rgba(10,35,63,.1); }
+
+/* ── BUTTONS ── */
+.btn {
+  display: block; width: 100%; padding: 13px;
+  border: none; border-radius: 3px; cursor: pointer;
+  font-family: var(--font); font-size: 12px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .1em;
+  transition: background .2s; margin-top: 10px;
+}
+.btn-blue  { background: var(--osprey-blue); color: #fff; }
+.btn-blue:hover  { background: var(--unf-dark); }
+.btn-aqua  { background: var(--unf-aqua); color: var(--osprey-blue); }
+.btn-aqua:hover  { background: var(--unf-mid); color: #fff; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── STATUS ── */
+.status {
+  font-size: 12px; font-weight: 600; padding: 9px 12px;
+  border-radius: 3px; margin-top: 8px; display: none;
+}
+.status.ok      { background: #e8f7ee; color: #1a6b3c; display: block; }
+.status.err     { background: #fdf0f0; color: #b22222; display: block; }
+.status.loading { background: #e6f6fc; color: var(--unf-mid); display: block; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 20px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--osprey-blue); color: #fff;
+  padding: 10px 22px; border-radius: 2px; border-left: 3px solid var(--unf-aqua);
+  font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1); z-index: 999;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── FOOTER ── */
+footer {
+  text-align: center; padding: 24px 14px 8px;
+  font-size: 10px; color: var(--osprey-gray);
+}
+footer img { height: 24px; opacity: .5; display: block; margin: 0 auto 6px; filter: grayscale(1); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <img class="hero-logo"
+       src="https://www.unf.edu/images/logos/UNFLogo.svg"
+       alt="University of North Florida"
+       onerror="this.outerHTML='<div style=\'color:#fff;font-weight:800;font-size:20px;letter-spacing:.06em;text-align:center;margin-bottom:10px\'>UNF</div>'">
+  <h1>AI &amp; Design Thinking<br>Innovation Challenge</h1>
+  <p>March 27, 2026 &nbsp;·&nbsp; Osprey Commons, Talon Room</p>
+</div>
+
+<!-- PHOTO UPLOAD -->
+<div class="card">
+  <div class="card-header">
+    📷 &nbsp;Submit Event Photos
+  </div>
+  <div class="card-body">
+    <div class="photo-drop" id="photo-drop">
+      <input type="file" accept="image/*" multiple id="photo-input" onchange="handlePhotos(event)">
+      <div class="cam">📸</div>
+      <p>Tap to select photos</p>
+      <small>Multiple OK &nbsp;·&nbsp; JPG / PNG / HEIC</small>
+    </div>
+    <div class="preview-grid" id="preview-grid"></div>
+    <div class="form-row" style="margin-top:12px">
+      <label for="photo-name">Your Name (optional)</label>
+      <input type="text" id="photo-name" placeholder="e.g. Sarah Chen" autocomplete="given-name">
+    </div>
+    <button class="btn btn-aqua" id="photo-btn" onclick="submitPhotos()">Upload to Live Screen</button>
+    <div class="status" id="photo-status"></div>
+  </div>
+</div>
+
+<!-- TEAM REGISTRATION -->
+<div class="card">
+  <div class="card-header">
+    🏆 &nbsp;Register Your Team
+  </div>
+  <div class="card-body">
+    <div class="form-row">
+      <label for="team-name">Team Name *</label>
+      <input type="text" id="team-name" placeholder="e.g. The Ospreys" autocomplete="off">
+    </div>
+    <div class="form-row">
+      <label for="team-members">Team Members *</label>
+      <input type="text" id="team-members" placeholder="e.g. Sarah, Marcus, Priya, Devon" autocomplete="off">
+    </div>
+    <div class="form-row">
+      <label for="team-pitch">Your Pitch / Big Idea *</label>
+      <textarea id="team-pitch" placeholder="Describe your AI solution in 2–3 sentences. What problem does it solve? Who does it help?"></textarea>
+    </div>
+    <button class="btn btn-blue" id="team-btn" onclick="submitTeam()">Register on Live Wall</button>
+    <div class="status" id="team-status"></div>
+  </div>
+</div>
+
+<footer>
+  <img src="https://www.unf.edu/images/logos/UNFLogo.svg" alt="UNF"
+       onerror="this.style.display='none'">
+  University of North Florida &nbsp;·&nbsp; AI &amp; Design Thinking Innovation Challenge
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api/data';
+let pendingPhotos = [];
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function setStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.className = 'status ' + type;
+}
+
+/* ── PHOTOS ── */
+function handlePhotos(e) {
+  pendingPhotos = Array.from(e.target.files).slice(0, 8);
+  const grid = document.getElementById('preview-grid');
+  grid.innerHTML = '';
+  pendingPhotos.forEach(f => {
+    const r = new FileReader();
+    r.onload = ev => {
+      const img = document.createElement('img');
+      img.src = ev.target.result;
+      grid.appendChild(img);
+    };
+    r.readAsDataURL(f);
+  });
+}
+
+async function submitPhotos() {
+  if (!pendingPhotos.length) { setStatus('photo-status', 'Select at least one photo first.', 'err'); return; }
+  const btn = document.getElementById('photo-btn');
+  btn.disabled = true; btn.textContent = 'Uploading…';
+  setStatus('photo-status', 'Uploading photos…', 'loading');
+
+  const by = document.getElementById('photo-name').value.trim() || 'Osprey';
+  let done = 0, failed = 0;
+
+  for (const file of pendingPhotos) {
+    try {
+      const src = await fileToBase64(file);
+      const res = await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'photo', src, by })
+      });
+      if (res.ok) done++; else failed++;
+    } catch { failed++; }
+  }
+
+  btn.disabled = false; btn.textContent = 'Upload to Live Screen';
+  if (done > 0) {
+    setStatus('photo-status', `${done} photo${done > 1 ? 's' : ''} sent to the live display! 🎉`, 'ok');
+    toast('Photos are live on the big screen!');
+    pendingPhotos = [];
+    document.getElementById('preview-grid').innerHTML = '';
+    document.getElementById('photo-input').value = '';
+  } else {
+    setStatus('photo-status', 'Upload failed — check your connection and try again.', 'err');
+  }
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    // Resize large images before upload to keep payload manageable
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 1200;
+        let w = img.width, h = img.height;
+        if (w > MAX || h > MAX) {
+          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+          else       { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
+      };
+      img.onerror = reject;
+      img.src = ev.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ── TEAM ── */
+async function submitTeam() {
+  const name    = document.getElementById('team-name').value.trim();
+  const members = document.getElementById('team-members').value.trim();
+  const pitch   = document.getElementById('team-pitch').value.trim();
+
+  if (!name || !members || !pitch) {
+    setStatus('team-status', 'All three fields are required.', 'err'); return;
+  }
+
+  const btn = document.getElementById('team-btn');
+  btn.disabled = true; btn.textContent = 'Registering…';
+  setStatus('team-status', 'Submitting…', 'loading');
+
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'team', name, members, pitch })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setStatus('team-status', `Team "${name}" is on the live wall! 🏆`, 'ok');
+      toast('Your team is live on the big screen!');
+      ['team-name','team-members','team-pitch'].forEach(id => document.getElementById(id).value = '');
+    } else if (res.status === 409) {
+      setStatus('team-status', 'A team with this name is already registered.', 'err');
+    } else {
+      setStatus('team-status', data.error || 'Submission failed — try again.', 'err');
+    }
+  } catch {
+    setStatus('team-status', 'Connection error — check your WiFi and try again.', 'err');
+  }
+
+  btn.disabled = false; btn.textContent = 'Register on Live Wall';
+}
+</script>
+</body>
+</html>

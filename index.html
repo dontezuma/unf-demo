@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNF AI & Design Thinking Innovation Challenge — Live Display</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --osprey-blue: #0A233F;
+  --osprey-gray: #A7A8A9;
+  --unf-aqua:    #00B2E2;
+  --unf-dark:    #003886;
+  --unf-mid:     #008EA9;
+  --unf-lt-blue: #8BB8E8;
+  --unf-green:   #76BC43;
+  --white:       #FFFFFF;
+  --off-white:   #F4F6F9;
+  --font: 'Open Sans', sans-serif;
+}
+
+html, body { height: 100%; background: var(--off-white); color: var(--osprey-blue); font-family: var(--font); }
+
+/* ── HEADER ── */
+header {
+  background: var(--osprey-blue);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+header::after {
+  content: '';
+  position: absolute; right: -80px; top: -40px;
+  width: 220px; height: 220px;
+  background: rgba(0,178,226,0.07);
+  transform: skewX(-38deg);
+  pointer-events: none;
+}
+.unf-logo { height: 44px; filter: brightness(0) invert(1); flex-shrink: 0; }
+.hdr-divider { width: 1px; height: 38px; background: rgba(0,178,226,0.35); flex-shrink: 0; }
+.hdr-text h1 {
+  font-size: 17px; font-weight: 800; color: #fff;
+  text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.2;
+}
+.hdr-text p { font-size: 11px; color: var(--unf-aqua); margin-top: 3px; }
+.live-pill {
+  margin-left: auto;
+  background: #C0392B; color: #fff;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 2px;
+  display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: #fff; animation: blink 1.2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
+
+/* ── PRIZE STRIP ── */
+.prize-strip {
+  background: var(--osprey-blue);
+  border-top: 1px solid rgba(0,178,226,0.2);
+  display: flex;
+}
+.prize-item {
+  flex: 1; text-align: center; padding: 8px 0;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.prize-item:last-child { border-right: none; }
+.prize-place { font-size: 9px; font-weight: 700; color: var(--osprey-gray); letter-spacing: .12em; text-transform: uppercase; }
+.prize-amt   { font-size: 20px; font-weight: 800; color: var(--unf-aqua); }
+
+/* ── LAYOUT ── */
+main { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: calc(100vh - 110px); }
+
+/* ── CAROUSEL ── */
+.carousel-col {
+  background: #07182C;
+  padding: 20px 24px;
+  display: flex; flex-direction: column;
+}
+.sec-label {
+  font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--unf-aqua); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sec-label::after { content:''; flex:1; height:1px; background: rgba(0,178,226,.2); }
+.carousel-wrap {
+  flex: 1; position: relative; border-radius: 4px; overflow: hidden;
+  background: #0d1e33; min-height: 320px;
+}
+.carousel-track { display: flex; height: 100%; transition: transform .55s ease; }
+.carousel-slide {
+  min-width: 100%; height: 100%; position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.carousel-slide img { width: 100%; height: 100%; object-fit: cover; }
+.slide-empty {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  color: rgba(255,255,255,.25); text-align: center; padding: 40px;
+}
+.slide-empty .cam-icon { font-size: 52px; opacity: .3; }
+.slide-empty p { font-size: 15px; font-weight: 700; }
+.slide-empty small { font-size: 12px; opacity: .6; }
+.slide-caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 10px 14px;
+  background: linear-gradient(transparent, rgba(10,35,63,.85));
+  color: #fff; font-size: 12px;
+}
+.car-btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(10,35,63,.75); border: 1px solid rgba(0,178,226,.3);
+  color: var(--unf-aqua); width: 34px; height: 34px; border-radius: 2px;
+  font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.car-btn:hover { background: var(--osprey-blue); border-color: var(--unf-aqua); }
+.car-btn.prev { left: 10px; }
+.car-btn.next { right: 10px; }
+.car-dots { display: flex; justify-content: center; gap: 5px; margin-top: 10px; }
+.car-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,.2); cursor: pointer; transition: background .2s; }
+.car-dot.active { background: var(--unf-aqua); }
+.photo-meta { font-size: 10px; color: rgba(255,255,255,.3); text-align: right; margin-top: 5px; font-weight: 600; letter-spacing: .06em; }
+
+/* ── QR PANEL ── */
+.qr-panel {
+  margin-top: 16px; background: rgba(255,255,255,.04);
+  border: 1px solid rgba(0,178,226,.15); border-radius: 4px;
+  padding: 14px 16px; display: flex; align-items: center; gap: 14px;
+}
+.qr-panel canvas { flex-shrink: 0; }
+.qr-text h3 { font-size: 12px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+.qr-text p { font-size: 11px; color: var(--osprey-gray); line-height: 1.4; }
+.qr-url { font-size: 10px; color: var(--unf-aqua); margin-top: 4px; word-break: break-all; }
+
+/* ── TEAMS ── */
+.teams-col { padding: 20px 24px; overflow-y: auto; }
+.teams-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.refresh-note { font-size: 10px; color: var(--unf-mid); font-weight: 600; display: flex; align-items: center; gap: 5px; }
+.spin { display: inline-block; animation: spin 1.2s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.teams-grid { display: flex; flex-direction: column; gap: 10px; }
+.team-card {
+  background: #fff; border-radius: 3px; padding: 14px 16px;
+  border: 1px solid rgba(10,35,63,.1); border-left: 4px solid var(--unf-aqua);
+  position: relative; animation: fadein .35s ease;
+}
+@keyframes fadein { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+.team-num {
+  position: absolute; top: 12px; right: 12px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--osprey-blue); color: #fff;
+  font-size: 10px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+}
+.team-name { font-size: 14px; font-weight: 800; color: var(--osprey-blue); text-transform: uppercase; letter-spacing: .04em; padding-right: 28px; margin-bottom: 3px; }
+.team-members { font-size: 11px; color: var(--osprey-gray); margin-bottom: 7px; }
+.team-pitch { font-size: 12px; color: #444; line-height: 1.55; }
+.no-teams { text-align: center; padding: 48px 24px; color: var(--osprey-gray); font-size: 14px; }
+.no-teams strong { display: block; font-size: 16px; color: var(--osprey-blue); margin-bottom: 6px; }
+
+/* ── STATUS BAR ── */
+#status-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--osprey-blue); border-top: 1px solid rgba(0,178,226,.2);
+  padding: 6px 24px; display: flex; align-items: center; gap: 16px;
+  font-size: 11px; color: rgba(255,255,255,.4);
+}
+#status-bar .dot-ok { width: 6px; height: 6px; border-radius: 50%; background: var(--unf-green); flex-shrink: 0; }
+#status-bar .dot-err { width: 6px; height: 6px; border-radius: 50%; background: #e74c3c; flex-shrink: 0; }
+
+@media (max-width: 768px) {
+  main { grid-template-columns: 1fr; }
+  .carousel-col { min-height: 60vw; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <img class="unf-logo" src="https://www.unf.edu/images/logos/UNFLogo.svg" alt="University of North Florida"
+       onerror="this.outerHTML='<span style=\'color:#fff;font-weight:800;font-size:18px;letter-spacing:.06em\'>UNF</span>'">
+  <div class="hdr-divider"></div>
+  <div class="hdr-text">
+    <h1>AI &amp; Design Thinking Innovation Challenge</h1>
+    <p>Friday, March 27, 2026 &nbsp;·&nbsp; Osprey Commons, Talon Room &nbsp;·&nbsp; National AI Literacy Day</p>
+  </div>
+  <div class="live-pill"><div class="live-dot"></div>Live</div>
+</header>
+
+<div class="prize-strip">
+  <div class="prize-item"><div class="prize-place">1st Place</div><div class="prize-amt">$1,500</div></div>
+  <div class="prize-item"><div class="prize-place">2nd Place</div><div class="prize-amt">$1,000</div></div>
+  <div class="prize-item"><div class="prize-place">3rd Place</div><div class="prize-amt">$500</div></div>
+</div>
+
+<main>
+  <!-- CAROUSEL -->
+  <div class="carousel-col">
+    <div class="sec-label">Live Photo Feed</div>
+    <div class="carousel-wrap" id="carousel-wrap">
+      <div class="carousel-track" id="carousel-track">
+        <div class="carousel-slide">
+          <div class="slide-empty">
+            <div class="cam-icon">📷</div>
+            <p>No photos yet</p>
+            <small>Participants: scan the QR code below<br>to upload event photos!</small>
+          </div>
+        </div>
+      </div>
+      <button class="car-btn prev" onclick="prevSlide()">&#8249;</button>
+      <button class="car-btn next" onclick="nextSlide()">&#8250;</button>
+    </div>
+    <div class="car-dots" id="car-dots"></div>
+    <div class="photo-meta" id="photo-meta">0 photos submitted</div>
+
+    <!-- QR CODE -->
+    <div class="qr-panel">
+      <canvas id="qr-canvas" width="80" height="80"></canvas>
+      <div class="qr-text">
+        <h3>Submit Photos &amp; Register Your Team</h3>
+        <p>Scan with your phone camera to open the submission page</p>
+        <div class="qr-url" id="qr-url-label">unf.capndon.com/mobile.html</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEAMS -->
+  <div class="teams-col">
+    <div class="teams-header">
+      <div class="sec-label" style="margin-bottom:0">Competing Teams</div>
+      <div class="refresh-note"><span class="spin">↻</span> Live updates</div>
+    </div>
+    <div class="teams-grid" id="teams-grid">
+      <div class="no-teams">
+        <strong>No teams registered yet</strong>
+        Scan the QR code to register your team and pitch!
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="status-bar">
+  <div class="dot-ok" id="status-dot"></div>
+  <span id="status-text">Connected · refreshing every 5s</span>
+  <span style="margin-left:auto" id="last-updated"></span>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const API = '/api/data';
+let photos = [], teams = [], currentSlide = 0;
+
+/* ── QR CODE ── */
+(function initQR() {
+  const url = `${location.protocol}//${location.host}/mobile.html`;
+  document.getElementById('qr-url-label').textContent = url;
+  try {
+    new QRCode(document.getElementById('qr-canvas'), {
+      text: url, width: 80, height: 80,
+      colorDark: '#0A233F', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } catch(e) {}
+})();
+
+/* ── FETCH STATE ── */
+async function fetchState() {
+  try {
+    const res = await fetch(API);
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    const changed = JSON.stringify(data.photos.map(p=>p.id)) !== JSON.stringify(photos.map(p=>p.id))
+                 || JSON.stringify(data.teams.map(t=>t.id)) !== JSON.stringify(teams.map(t=>t.id));
+    photos = data.photos || [];
+    teams  = data.teams  || [];
+    if (changed) render();
+    setStatus(true);
+  } catch(e) {
+    setStatus(false);
+  }
+}
+
+function setStatus(ok) {
+  document.getElementById('status-dot').className = ok ? 'dot-ok' : 'dot-err';
+  document.getElementById('status-text').textContent = ok ? 'Connected · refreshing every 5s' : 'Connection error — retrying…';
+  document.getElementById('last-updated').textContent = 'Last update: ' + new Date().toLocaleTimeString();
+}
+
+/* ── RENDER ── */
+function render() { renderCarousel(); renderTeams(); }
+
+function renderCarousel() {
+  const track = document.getElementById('carousel-track');
+  const dots  = document.getElementById('car-dots');
+  document.getElementById('photo-meta').textContent = photos.length + ' photo' + (photos.length !== 1 ? 's' : '') + ' submitted';
+
+  if (!photos.length) {
+    track.innerHTML = `<div class="carousel-slide"><div class="slide-empty"><div class="cam-icon">📷</div><p>No photos yet</p><small>Scan the QR code to upload!</small></div></div>`;
+    dots.innerHTML = '';
+    return;
+  }
+  if (currentSlide >= photos.length) currentSlide = photos.length - 1;
+  track.innerHTML = photos.map(p => `
+    <div class="carousel-slide">
+      <img src="${p.src}" alt="Photo by ${esc(p.by)}" loading="lazy">
+      <div class="slide-caption">📸 ${esc(p.by)} · ${p.time}</div>
+    </div>
+  `).join('');
+  dots.innerHTML = photos.map((_,i) => `<div class="car-dot${i===currentSlide?' active':''}" onclick="goSlide(${i})"></div>`).join('');
+  track.style.transform = `translateX(-${currentSlide * 100}%)`;
+}
+
+function renderTeams() {
+  const grid = document.getElementById('teams-grid');
+  if (!teams.length) {
+    grid.innerHTML = `<div class="no-teams"><strong>No teams registered yet</strong>Scan the QR code to register your team and pitch!</div>`;
+    return;
+  }
+  grid.innerHTML = teams.map((t, i) => `
+    <div class="team-card">
+      <div class="team-num">${i + 1}</div>
+      <div class="team-name">${esc(t.name)}</div>
+      <div class="team-members">👥 ${esc(t.members)}</div>
+      <div class="team-pitch">${esc(t.pitch)}</div>
+    </div>
+  `).join('');
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ── CAROUSEL NAV ── */
+function prevSlide() { if (!photos.length) return; currentSlide = (currentSlide - 1 + photos.length) % photos.length; moveSlide(); }
+function nextSlide() { if (!photos.length) return; currentSlide = (currentSlide + 1) % photos.length; moveSlide(); }
+function goSlide(i)  { currentSlide = i; moveSlide(); }
+function moveSlide() {
+  document.getElementById('carousel-track').style.transform = `translateX(-${currentSlide * 100}%)`;
+  document.querySelectorAll('.car-dot').forEach((d,i) => d.classList.toggle('active', i === currentSlide));
+}
+
+/* ── AUTO ADVANCE + POLL ── */
+setInterval(() => { if (photos.length > 1) nextSlide(); }, 5000);
+setInterval(fetchState, 5000);
+fetchState();
+</script>
+</body>
+</html>
